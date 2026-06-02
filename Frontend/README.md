@@ -1,16 +1,43 @@
-# React + Vite
+# Frontend Architecture: GenAI Interview Preparation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the React/Vite frontend application. For full project setup instructions, please refer to the [Root README](../README.md).
 
-Currently, two official plugins are available:
+## 🧩 Structure & Philosophy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This application is built using a **feature-based architecture**. Instead of grouping files by type (e.g., all components together, all hooks together), files are grouped by feature domain:
 
-## React Compiler
+```
+src/
+├── app.routes.jsx      # Main application routing
+├── components/         # Shared global UI components (e.g., Loader)
+├── features/
+│   ├── auth/           # Authentication domain (Login, Register, auth API)
+│   └── interview/      # Core app domain (Dashboard, PDF Generation, API)
+└── style/              # Global SCSS tokens and utility classes
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🔐 State Management & Authentication
 
-## Expanding the ESLint configuration
+- The application uses React Context (`InterviewContext`, `AuthContext`) to manage global state and avoid prop drilling.
+- Authentication state is automatically managed via a `useAuth` hook which listens to `httpOnly` secure cookies set by the backend.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🌐 API Communication
+
+All API calls are centralized in service files (e.g., `auth.api.js`, `interview.api.js`) using **Axios**. 
+- Axios is configured with `withCredentials: true` to ensure cookies are sent securely across origins.
+- API Base URL is controlled via the `VITE_API_URL` environment variable.
+
+## 🚀 Vercel Deployment & Routing
+
+Because this is a Single Page Application (SPA) using React Router, it relies on client-side routing.
+When deployed to static hosts like Vercel, navigating directly to a deep link (like `/interview/123`) would normally result in a `404 Not Found` error. 
+
+To solve this, this folder includes a `vercel.json` file:
+```json
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+```
+This ensures the Vercel server always serves `index.html`, allowing React Router to handle the URL.
