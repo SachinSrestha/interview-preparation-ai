@@ -34,8 +34,13 @@ async function registerUserController(req, res){
         password:hashPassword
     })
 
-    const token = jwt.sign({id:user._id, username:user.username}, process.env.JWT_SECRET, {expiresIn:"3d"})
-    res.cookie("token", token)
+    const token = jwt.sign({id:user._id, username:user.username}, process.env.JWT_SECRET, {expiresIn:"4d"})
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 4 * 24 * 60 * 60 * 1000 // 4 days
+    })
 
     return res.status(201).json({
         message:"User created successfully",
@@ -68,8 +73,13 @@ async function loginUserController(req, res){
         })
     }
 
-    const token = jwt.sign({id:user._id, username:user.username}, process.env.JWT_SECRET, {expiresIn:"3d"})
-    res.cookie("token", token)
+    const token = jwt.sign({id:user._id, username:user.username}, process.env.JWT_SECRET, {expiresIn:"4d"})
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 4 * 24 * 60 * 60 * 1000 // 4 days
+    })
 
     return res.status(200).json({
         message:"User Logged In Successfully.",
@@ -93,7 +103,11 @@ async function logoutUserController(req,res){
         })
     }
 
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
+    });
     await tokenBlacklistModel.create({
         token
     })

@@ -1,0 +1,10 @@
+Position: Full Stack Engineer (MERN)
+
+We are looking for an experienced Full Stack Engineer with strong proficiency in the MERN stack (MongoDB, Express, React, Node.js). You will be responsible for designing and developing scalable web applications, integrating AI services using Google GenAI, and collaborating closely with our frontend team. 
+
+Requirements:
+- 3+ years of experience in JavaScript/TypeScript.
+- Deep understanding of Node.js and Express.
+- Experience with MongoDB and mongoose.
+- Knowledge of cloud platforms and deployment (AWS/GCP).
+- Strong problem-solving skills and ability to write clean, maintainable code.
