@@ -7,8 +7,8 @@ This directory contains the Node.js/Express backend API. For full project setup 
 ### 1. Google Gemini AI Integration (`src/services/ai.service.js`)
 The backend uses the `@google/genai` SDK. It leverages **Structured Outputs** (`responseSchema`) to guarantee that the AI returns perfectly formatted, deterministic JSON arrays. This ensures the frontend never crashes due to malformed AI text.
 
-### 2. PDF Generation (`src/services/ai.service.js` & `interview.controller.js`)
-When a user requests to download their resume, the AI generates optimized HTML. We then use **Puppeteer** to launch a headless Chromium instance to render that HTML into a styled, downloadable PDF Buffer.
+### 2. HTML Generation (`src/services/ai.service.js` & `interview.controller.js`)
+When a user requests to download their resume, the AI generates optimized, ATS-friendly HTML. The backend returns this raw HTML string to the frontend, which handles the actual conversion to PDF.
 
 ### 3. Authentication & Security
 - Passwords are encrypted using `bcryptjs`.
@@ -32,16 +32,5 @@ When a user requests to download their resume, the AI generates optimized HTML. 
 | GET | `/` | Fetches all reports for the logged-in user |
 | GET | `/report/:id` | Fetches a specific report by ID |
 | POST | `/` | Uploads resume (via `multer` & `pdf-parse`), queries AI, and saves report |
-| POST | `/resume/pdf/:id` | Generates AI-optimized HTML and returns a Puppeteer-rendered PDF |
+| POST | `/resume/pdf/:id` | Generates AI-optimized HTML and returns a JSON object containing the HTML string |
 
-## ☁️ Render Deployment & Puppeteer
-
-Deploying Puppeteer to a Linux cloud environment (like Render) requires bypassing standard sandboxes. 
-In our code, Puppeteer is launched with:
-```javascript
-puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] })
-```
-**Render Specifics:** You must configure your Render build command to manually install the Chromium binary, otherwise PDF generation will fail with a 500 error:
-```bash
-npm install && npx puppeteer browsers install chrome
-```
