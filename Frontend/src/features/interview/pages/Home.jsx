@@ -11,18 +11,21 @@ const Home = () => {
     const { handleLogout } = useAuth()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
+    const [ isGenerating, setIsGenerating ] = useState(false)
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
 
     const handleGenerateReport = async () => {
+        setIsGenerating(true)
         const resumeFile = resumeInputRef.current.files[ 0 ]
         const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+        setIsGenerating(false)
+        if (data) navigate(`/interview/${data._id}`)
     }
 
     if (loading) {
-        return <Loader text="Analyzing profile and generating strategy..." />
+        return <Loader text={isGenerating ? "Analyzing profile and generating strategy..." : "Loading..."} />
     }
 
     return (
