@@ -27,6 +27,12 @@ All API calls are centralized in service files (e.g., `auth.api.js`, `interview.
 - Axios is configured with `withCredentials: true` to ensure cookies are sent securely across origins.
 - API Base URL is controlled via the `VITE_API_URL` environment variable.
 
+## 📄 Client-Side PDF Generation
+
+To avoid memory and dependency issues on cloud servers, PDF generation is handled entirely on the client side. 
+- The backend API (`/api/interview/resume/pdf/:id`) returns AI-generated HTML.
+- The frontend dynamically imports `html2pdf.js`, renders the HTML in a hidden container, and triggers a direct browser download.
+
 ## 🚀 Vercel Deployment & Routing
 
 Because this is a Single Page Application (SPA) using React Router, it relies on client-side routing.

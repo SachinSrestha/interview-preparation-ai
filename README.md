@@ -34,8 +34,11 @@ A full-stack, AI-powered web application that generates personalized interview p
 - **Node.js & Express.js**
 - **MongoDB & Mongoose** (Database)
 - **Google GenAI SDK** (Gemini 3 Flash Preview) for structured JSON AI responses
-- **Puppeteer** & **pdf-parse** for PDF generation and parsing
+- **pdf-parse** for uploaded resume parsing
 - **JWT & bcryptjs** for authentication
+
+**PDF Generation:**
+- **html2pdf.js** — Resume PDFs are generated **client-side** in the browser, eliminating the need for server-side Chromium/Puppeteer dependencies
 
 ---
 
@@ -89,4 +92,5 @@ The application will now be running at `http://localhost:5173`.
 
 This project is fully configured for cloud deployment:
 - **Frontend** is deployed on **Vercel** with a `vercel.json` configuration to handle Single Page Application (SPA) routing.
-- **Backend** is deployed on **Render** using a custom build command (`npm install && npx puppeteer browsers install chrome`) to ensure Puppeteer runs correctly in a headless Linux environment. Express is configured to trust the Render proxy to allow secure cross-origin cookies.
+- **Backend** is deployed on **Render**. Express is configured with `trust proxy` to allow secure cross-origin cookies between Vercel and Render.
+- **PDF Generation** happens entirely in the user's browser using `html2pdf.js` — the backend only returns AI-generated HTML, so no server-side Chromium is needed.
