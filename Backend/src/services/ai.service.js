@@ -106,6 +106,8 @@ async function generateResumeHtml({ resume, selfDescription, jobDescription }) {
                         you can highlight the content using some colors or different font styles but the overall design should be simple and professional.
                         The content should be ATS friendly, i.e. it should be easily parsable by ATS systems without losing important information.
                         The resume should not be so lengthy, it should ideally be 1-2 pages long when converted to PDF. Focus on quality rather than quantity and make sure to include all the relevant information that can increase the candidate's chances of getting an interview call for the given job description.
+                        
+                        CRITICAL STYLING REQUIREMENT: The HTML must explicitly include CSS styles that set a white background (#FFFFFF) and black or very dark gray text (#000000 or #333333) for the entire document. Do NOT use light text colors, as this will be printed on a white PDF page. Ensure high contrast and standard professional fonts (e.g., Arial, Helvetica, sans-serif).
                     `
 
     const response = await ai.models.generateContent({

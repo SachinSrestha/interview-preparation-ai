@@ -69,6 +69,13 @@ export const useInterview = () => {
                 htmlContent = htmlContent.replace(/^```(?:html)?\s*/i, '').replace(/\s*```$/i, '')
             }
 
+            // Enforce a white background and dark text to prevent invisible text on light backgrounds
+            htmlContent = `
+                <div style="background-color: #ffffff; color: #000000; min-height: 100vh; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; padding: 20px;">
+                    ${htmlContent}
+                </div>
+            `
+
             // Dynamically import html2pdf.js and generate PDF
             const html2pdf = (await import("html2pdf.js")).default
             await html2pdf().from(htmlContent).set({
