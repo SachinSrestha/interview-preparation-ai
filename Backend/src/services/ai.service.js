@@ -78,11 +78,11 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
         }
     })
 
-    let responseText = response.text
+    let responseText = response.text.trim()
     if (responseText.startsWith('```')) {
         responseText = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
     }
-    return JSON.parse(responseText)
+    return JSON.parse(responseText.trim())
 
 
 }
@@ -123,13 +123,23 @@ async function generateResumeHtml({ resume, selfDescription, jobDescription }) {
         }
     })
 
-    let responseText = response.text
+    let responseText = response.text.trim()
     if (responseText.startsWith('```')) {
-        responseText = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
+        responseText = responseText.replace(/^```(?:json|html)?\s*/i, '').replace(/\s*```$/i, '')
     }
-    const jsonContent = JSON.parse(responseText)
-
-    return jsonContent.html
+    
+    try {
+        const jsonContent = JSON.parse(responseText.trim())
+        return jsonContent.html
+    } catch (parseError) {
+        console.warn("JSON parsing failed, attempting to extract raw HTML as fallback.", parseError)
+        // Fallback to extract raw HTML if AI messed up JSON escaping
+        const htmlMatch = responseText.match(/<(html|div)[\s\S]*<\/\1>/i)
+        if (htmlMatch) {
+            return htmlMatch[0]
+        }
+        throw new Error("Failed to parse AI response and no valid HTML structure found.")
+    }
 
 }
 
