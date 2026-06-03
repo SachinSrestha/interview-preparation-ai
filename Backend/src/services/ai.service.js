@@ -78,7 +78,11 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
         }
     })
 
-    return JSON.parse(response.text)
+    let responseText = response.text
+    if (responseText.startsWith('```')) {
+        responseText = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
+    }
+    return JSON.parse(responseText)
 
 
 }
@@ -119,7 +123,11 @@ async function generateResumeHtml({ resume, selfDescription, jobDescription }) {
         }
     })
 
-    const jsonContent = JSON.parse(response.text)
+    let responseText = response.text
+    if (responseText.startsWith('```')) {
+        responseText = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
+    }
+    const jsonContent = JSON.parse(responseText)
 
     return jsonContent.html
 
