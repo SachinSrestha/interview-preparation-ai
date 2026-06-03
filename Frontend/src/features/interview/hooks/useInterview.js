@@ -62,25 +62,21 @@ export const useInterview = () => {
     const getResumePdf = async (interviewReportId) => {
         try {
             const response = await generateResumePdf({ interviewReportId })
-            const htmlContent = response.html
+            let htmlContent = response.html
 
-            // Create a temporary hidden container to render the HTML
-            const container = document.createElement("div")
-            container.innerHTML = htmlContent
-            container.style.position = "fixed"
-            container.style.left = "-9999px"
-            document.body.appendChild(container)
+            // Strip possible markdown wrapping from the AI response
+            if (htmlContent) {
+                htmlContent = htmlContent.replace(/^```(?:html)?\s*/i, '').replace(/\s*```$/i, '')
+            }
 
             // Dynamically import html2pdf.js and generate PDF
             const html2pdf = (await import("html2pdf.js")).default
-            await html2pdf().from(container).set({
+            await html2pdf().from(htmlContent).set({
                 margin: [10, 10, 10, 10],
                 filename: `resume_${interviewReportId}.pdf`,
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             }).save()
-
-            document.body.removeChild(container)
         }
         catch (error) {
             console.log(error)
